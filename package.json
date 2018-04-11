@@ -10,7 +10,7 @@
   "author": "Brad Traversy",
   "license": "ISC",
   "dependencies": {
-    "aws-sdk": "^2.223.1",
+    "aws-sdk": "^2.224.1",
     "bcryptjs": "*",
     "body-parser": "*",
     "connect-flash": "*",

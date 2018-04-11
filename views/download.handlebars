@@ -1,0 +1,24 @@
+<h2 class="page-header">Panel użytkownika</h2>
+<p>Witaj w swoim panelu {{title}}</p>
+<form action="download-file-s3" method="get">
+  <table class="table table-striped ">
+    <thead>
+      <tr>
+        
+        <th>Nazwa pliku</th>
+        <th>Wybierz</th>
+      </tr>
+    </thead>
+    <tbody>
+      {{#each list}}
+      <tr>
+       
+        <td>{{this}}</td>
+        <td>
+          <input type="radio" name="file" value={{this}}>
+        </td>
+        {{/each}}
+    </tbody>
+  </table>
+  <button type="submit" class="btn btn-primary btn-lg btn-block ">Pobierz</button>
+</form>

@@ -11,11 +11,14 @@
         <nav>
           <ul class="nav nav-pills pull-right">
             {{#if user}}
-              <li role="presentation"><a href="/">Dashboard</a></li>
+                       
+              <li role="presentation"><a href="/upload">Upload</a></li>
+              <li role="presentation"><a href="/download">Download</a></li>
               <li role="presentation"><a href="/users/logout">Wyloguj</a></li>
             {{else}}
               <li role="presentation"><a href="/users/login">Logowanie</a></li>
               <li role="presentation"><a href="/users/register">Rejestracja</a></li>
+              
             {{/if}}
           </ul>
         </nav>
