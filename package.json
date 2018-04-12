@@ -1,6 +1,6 @@
 {
-  "name": "loginapp",
-  "version": "1.0.0",
+  "name": "image-amazon-s3",
+  "version": "0.0.1",
   "description": "Simple authentication system",
   "main": "app.js",
   "scripts": {
