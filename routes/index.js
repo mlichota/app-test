@@ -18,8 +18,15 @@ var emptyBucket;
 
 router.get('/', ensureAuthenticated, function (req, res) {
 	res.render('index', { list: req.user.username });
-
+	console.log(req.session);
 });
+
+fs.mkdtemp(path.join(__dirname, '../temp-'), (err, folder) => {
+	if (err) throw err;
+	console.log(folder);
+	// Prints: /tmp/foo-itXde2 or C:\Users\...\AppData\Local\Temp\foo-itXde2
+});
+
 
 router.get('/upload', ensureAuthenticated, function (req, res) {
 	res.render('upload');
@@ -56,8 +63,11 @@ router.get('/upload', ensureAuthenticated, function (req, res) {
 
 						params = { Bucket: 'mlichota-test-' + req.user.username, Key: filename, Body: data };
 
-						s3.putObject(params, function (err, data) {
+						
 
+
+						s3.putObject(params, function (err, data) {
+							
 							if (err) {
 
 								console.log(err)
@@ -69,7 +79,7 @@ router.get('/upload', ensureAuthenticated, function (req, res) {
 								console.log("Successfully uploaded data to myBucket/myKey");
 
 
-								fs.unlink(filename, (err) => {
+								fs.unlinkSync(filename, (err) => {
 									if (err) throw err;
 									console.log('Successfully deleted: ' + filename);
 
@@ -83,11 +93,7 @@ router.get('/upload', ensureAuthenticated, function (req, res) {
 
 				});
 				req.flash('success_msg', 'Plik: ' + filename + ' został załadowany!');
-				fs.unlink(filename, (err) => {
-					if (err) throw err;
-					console.log('Successfully deleted: ' + filename);
 
-				});
 			}
 			else {
 				req.flash('error_msg', 'Plik nie jest obrazkiem! Obsługiwane typu plików: "*.jpg", "*.gif", "*.png".');

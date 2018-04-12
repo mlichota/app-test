@@ -25,6 +25,8 @@
     "mongoose": "*",
     "passport": "*",
     "passport-http": "*",
-    "passport-local": "*"
+    "passport-local": "*",
+    "rimraf": "^2.6.2",
+    "rmdir": "^1.2.0"
   }
 }

@@ -5,6 +5,10 @@ var AWS = require('aws-sdk');
 var s3 = new AWS.S3();
 var LocalStrategy = require('passport-local').Strategy;
 var User = require('../models/user');
+var fs = require('fs');
+var path = require('path');
+var rmdir = require('rimraf');
+
 
 // Register
 router.get('/register', function (req, res) {
@@ -98,13 +102,44 @@ passport.deserializeUser(function (id, done) {
 router.post('/login',
 	passport.authenticate('local', { successRedirect: '/', failureRedirect: '/users/login', failureFlash: true }),
 	function (req, res) {
+		
+		
+		
+	
+		
+		
+		
+		
+				
+		
+		
+		
+		
+		
+		
+		
+		
 		res.redirect('/');
+		
+
+
+
+
+
+
+
+
+
+
+
+
+
 	});
 
 router.get('/logout', function (req, res) {
 	req.logout();
-	var fs = require('fs');
-
+	
+	rmdir('./temp-k9scJo', function(error){});
 
 	req.flash('success_msg', 'Zostałeś wylogowany');
 
