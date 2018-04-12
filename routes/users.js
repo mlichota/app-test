@@ -1,8 +1,9 @@
 var express = require('express');
 var router = express.Router();
 var passport = require('passport');
+var AWS = require('aws-sdk');
+var s3 = new AWS.S3();
 var LocalStrategy = require('passport-local').Strategy;
-
 var User = require('../models/user');
 
 // Register
@@ -20,6 +21,7 @@ router.post('/register', function (req, res) {
 	var username = req.body.username;
 	var password = req.body.password;
 	var password2 = req.body.password2;
+
 
 	// Validation
 	req.checkBody('username', 'Wprowadź login!').notEmpty();
@@ -40,7 +42,22 @@ router.post('/register', function (req, res) {
 
 		User.createUser(newUser, function (err, user) {
 			if (err) throw err;
-			console.log(user);
+			console.log(user.username);
+
+			var params = {
+				Bucket: 'mlichota-test-' + user.username, /* required */
+				ACL: 'private',
+				CreateBucketConfiguration: {
+					LocationConstraint: "eu-central-1"
+				},
+
+
+			};
+			s3.createBucket(params, function (err, data) {
+				if (err) console.log(err, err.stack); // an error occurred
+				else console.log(data);           // successful response
+			});
+
 		});
 
 		req.flash('success_msg', 'Sukces! Możesz się zalogować używając swoich danych');
@@ -88,7 +105,7 @@ router.get('/logout', function (req, res) {
 	req.logout();
 	var fs = require('fs');
 
-	
+
 	req.flash('success_msg', 'Zostałeś wylogowany');
 
 	res.redirect('/users/login');

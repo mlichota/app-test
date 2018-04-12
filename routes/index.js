@@ -6,6 +6,10 @@ var s3 = new AWS.S3();
 var fs = require('fs');
 var dataFormated = [];
 var path = require('path');
+var filePath;
+var fileName;
+var userName;
+var emptyBucket;
 
 
 
@@ -13,115 +17,166 @@ var path = require('path');
 
 
 router.get('/', ensureAuthenticated, function (req, res) {
-	res.render('index');
-
+	res.render('index', { list: req.user.username });
 
 });
+
 router.get('/upload', ensureAuthenticated, function (req, res) {
 	res.render('upload');
 
 	router.use(fileUpload({ safeFileNames: true, preserveExtension: true }));
 
 	router.post('/upload', function (req, res) {
-		if (!req.files)
-			return res.status(400).send('No files were uploaded.');
 
-		let sampleFile = req.files.sampleFile;
-		let filename = req.files.sampleFile.name;
+		//console.log(req.files.sampleFile);
 
-		sampleFile.mv(filename, function (err) {
-			if (err)
-				return res.status(500).send(err);
+		if (req.files.sampleFile !== undefined) {
 
-			fs.readFile(filename, function (err, data) {
-				
-				if (err) { throw err; }
+			console.log('ok');
+			console.log(req.files.sampleFile);
 
-				params = { Bucket: 'mlichota-test', Key: filename, Body: data };
+			//res.render('upload');
 
-				s3.putObject(params, function (err, data) {
 
-					if (err) {
 
-						console.log(err)
+			let sampleFile = req.files.sampleFile;
+			let filename = req.files.sampleFile.name;
+			let flag = 0;
 
-					} else {
 
-						console.log("Successfully uploaded data to myBucket/myKey");
-						req.flash('success_msg', 'Sukces! Plik: ' + filename + ' został przesłany');
-						res.redirect('upload');
+			if (req.files.sampleFile.mimetype == 'image/jpeg') {
 
-						fs.unlink(filename, (err) => {
-							if (err) throw err;
-							console.log('Successfully deleted: ' + filename);
+				sampleFile.mv(filename, function (err) {
+					if (err)
+						return res.status(500).send(err);
+
+					fs.readFile(filename, function (err, data) {
+
+						if (err) { throw err; }
+
+						params = { Bucket: 'mlichota-test-' + req.user.username, Key: filename, Body: data };
+
+						s3.putObject(params, function (err, data) {
+
+							if (err) {
+
+								console.log(err)
+
+							} else {
+
+
+
+								console.log("Successfully uploaded data to myBucket/myKey");
+
+
+								fs.unlink(filename, (err) => {
+									if (err) throw err;
+									console.log('Successfully deleted: ' + filename);
+
+								});
+
+
+							}
 						});
-					}
+						//
+					});
+
 				});
-			});
-		});
+				req.flash('success_msg', 'Plik: ' + filename + ' został załadowany!');
+
+			}
+			else {
+				req.flash('error_msg', 'Plik nie jest obrazkiem! Obsługiwane typu plików: "*.jpg", "*.gif", "*.png".');
+			}
+		}
+		else {
+			req.flash('error_msg', 'Nie wybrałeś pliku. Wybierz plik i spróbuj ponownie.');
+			console.log('pusty array');
+			//res.render('upload');
+		}
+
+
+
+		res.redirect('upload');
+
+
 	});
+
 });
+
 router.get('/download', ensureAuthenticated, function (req, res) {
 
 
 	var params = {
-		Bucket: "mlichota-test",
+		Bucket: 'mlichota-test-' + req.user.username,
 	};
 
+
 	dataFormated = [];
+
+
+
 	s3.listObjectsV2(params, function (err, data) {
-		if (err) console.log(err, err.stack); 
+		if (err) console.log(err, err.stack);
 		else
 
-			console.log(data);           
+			console.log(data);
 
 		var contents = data.Contents;
 		contents.forEach(function (data) {
 			dataFormated.push(data.Key);
 		});
-
-		res.render('download', { list: dataFormated });
-		console.log(dataFormated)
+		if (data.KeyCount == 0) {
+			emptyBucket = true
+			res.render('download', { emptyBucket });
+		}
+		else {
+			emptyBucket = false
+			res.render('download', { list: dataFormated });
+		}
 	});
 
-	
+
+
+
 
 });
-router.get('/download-file-s3', ensureAuthenticated, function(req, res){
-	console.log('file: ' + req.query.file);
+
+router.get('/download-file-s3', ensureAuthenticated, function (req, res) {
+	fileName = req.query.file;
 	var params = {
-		Bucket: "mlichota-test",
-		Key: req.query.file
+		Bucket: 'mlichota-test-' + req.user.username,
+		Key: fileName
 	};
-	var filePath = path.join(__dirname, "../tmp/" + req.query.file);
-	
-var file = fs.createWriteStream(filePath, 'utf8');
+	filePath = path.join(__dirname, "../tmp/" + fileName);
 
-file.on('finish', function(){ 
-    console.log(req.query.file + " downloaded");
+	var file = fs.createWriteStream(filePath, 'utf8');
+
+	file.on('finish', function () {
+		console.log(fileName + " downloaded");
+	});
+
+	file.on('error', function (e) {
+		console.log("Error downloading file", e);
+	});
+
+	s3.getObject(params).createReadStream().pipe(file);
+
+
+	//res.download('./tmp/'+req.query.file);
+
+	//next();
+
+	//res.render('download', { list: dataFormated });
+
+
+
+	res.render('downloading', { fileName });
 });
 
-file.on('error', function(e){ 
-    console.log("Error downloading file", e);
+router.get('/download-file-local', ensureAuthenticated, function (req, res) {
+	res.download(filePath);
 });
-
-s3.getObject(params).createReadStream().pipe(file);
-
-
-//res.download('./tmp/'+req.query.file);
-
-//next();
-
-//res.render('download', { list: dataFormated });
-
-
-
-res.render('downloading', { list: dataFormated });
-});
-
-router.get('/download-file-local', ensureAuthenticated, function(req, res){  
-	res.download("./tmp/avatar.jpg")
-}); 
 
 
 function ensureAuthenticated(req, res, next) {
@@ -129,7 +184,7 @@ function ensureAuthenticated(req, res, next) {
 		return next();
 
 	} else {
-		
+
 		res.redirect('/users/login');
 	}
 }
