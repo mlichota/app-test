@@ -83,7 +83,11 @@ router.get('/upload', ensureAuthenticated, function (req, res) {
 
 				});
 				req.flash('success_msg', 'Plik: ' + filename + ' został załadowany!');
+				fs.unlink(filename, (err) => {
+					if (err) throw err;
+					console.log('Successfully deleted: ' + filename);
 
+				});
 			}
 			else {
 				req.flash('error_msg', 'Plik nie jest obrazkiem! Obsługiwane typu plików: "*.jpg", "*.gif", "*.png".');
