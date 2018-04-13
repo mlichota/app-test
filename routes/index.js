@@ -119,7 +119,7 @@ router.get('/download', ensureAuthenticated, function (req, res) {
 		}
 		else {
 			emptyBucket = false
-			res.render('download', { list: dataFormated });
+			res.render('download', { list: data.Contents.Key });
 		}
 	});
 
