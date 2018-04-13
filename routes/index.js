@@ -138,6 +138,7 @@ router.get('/download-file-s3', ensureAuthenticated, function (req, res) {
 
 	file.on('finish', function () {
 		console.log(fileName + " downloaded");
+		res.redirect('/download-file-local');
 	});
 
 	file.on('error', function (e) {
@@ -147,17 +148,11 @@ router.get('/download-file-s3', ensureAuthenticated, function (req, res) {
 	s3.getObject(params).createReadStream().pipe(file);
 
 
-	var timeleft = 1;
-	var downloadTimer = setInterval(function () {
-		--timeleft;
+	
 
-		if (timeleft <= 0) {
-			clearInterval(downloadTimer);
-
-			res.redirect('/download-file-local');
-		}
-	}, 5000);
-
+	
+			
+	
 
 });
 
