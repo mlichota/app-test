@@ -112,16 +112,17 @@ router.get('/download', ensureAuthenticated, function (req, res) {
 		var contents = data.Contents;
 		contents.forEach(function (data) {
 			dataFormated.push(data.Key);
+
+			if (data.KeyCount == 0) {
+				emptyBucket = true
+				res.render('download', { emptyBucket });
+			}
+			else {
+				emptyBucket = false
+				res.render('download', { list: data.Key });
+				console.log(data.Key);
+			}
 		});
-		if (data.KeyCount == 0) {
-			emptyBucket = true
-			res.render('download', { emptyBucket });
-		}
-		else {
-			emptyBucket = false
-			res.render('download', { list: data.Key });
-			console.log(data.Key);
-		}
 	});
 
 });
