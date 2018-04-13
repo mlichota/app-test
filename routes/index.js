@@ -15,7 +15,7 @@ var session = require('express-session');
 
 router.get('/', ensureAuthenticated, function (req, res) {
 	res.render('index', { list: req.user.username });
-	
+
 	fs.mkdtemp(path.join(__dirname, '../temp-'), (err, folder) => {
 		if (err) throw err;
 
@@ -39,20 +39,11 @@ router.get('/upload', ensureAuthenticated, function (req, res) {
 
 	router.post('/upload', function (req, res) {
 
-		//console.log(res.session.user);
 
 		if (req.files.sampleFile !== undefined) {
 
-
-			//console.log(req.files.sampleFile);
-
-			//res.render('upload');
-
-
-
 			let sampleFile = req.files.sampleFile;
 			let filename = req.files.sampleFile.name;
-
 
 
 			if (req.files.sampleFile.mimetype == 'image/jpeg' || req.files.sampleFile.mimetype == 'image/png' || req.files.sampleFile.mimetype == 'image/bmp') {
@@ -67,9 +58,6 @@ router.get('/upload', ensureAuthenticated, function (req, res) {
 
 						params = { Bucket: 'mlichota-test-' + req.user.username, Key: filename, Body: data };
 
-
-
-
 						s3.putObject(params, function (err, data) {
 
 							if (err) {
@@ -78,21 +66,11 @@ router.get('/upload', ensureAuthenticated, function (req, res) {
 
 							} else {
 
-
-
 								console.log("Successfully uploaded data to myBucket/myKey");
-
-
-								//fs.unlinkSync(filename, (err) => {
-								//	if (err) throw err;
-								//	console.log('Successfully deleted: ' + filename);
-
-								//});
-
 
 							}
 						});
-						//
+
 					});
 
 				});
@@ -106,13 +84,10 @@ router.get('/upload', ensureAuthenticated, function (req, res) {
 		else {
 			req.flash('error_msg', 'Nie wybrałeś pliku. Wybierz plik i spróbuj ponownie.');
 			console.log('pusty array');
-			//res.render('upload');
+
 		}
 
-
-
 		res.redirect('upload');
-
 
 	});
 
@@ -127,8 +102,6 @@ router.get('/download', ensureAuthenticated, function (req, res) {
 
 
 	dataFormated = [];
-
-
 
 	s3.listObjectsV2(params, function (err, data) {
 		if (err) console.log(err, err.stack);
@@ -149,10 +122,6 @@ router.get('/download', ensureAuthenticated, function (req, res) {
 			res.render('download', { list: dataFormated });
 		}
 	});
-
-
-
-
 
 });
 
@@ -177,16 +146,6 @@ router.get('/download-file-s3', ensureAuthenticated, function (req, res) {
 	s3.getObject(params).createReadStream().pipe(file);
 
 
-	//res.download('./tmp/'+req.query.file);
-
-	//next();
-
-	//res.render('download', { list: dataFormated });
-
-
-
-	
-
 	var timeleft = 1;
 	var downloadTimer = setInterval(function () {
 		--timeleft;
@@ -194,12 +153,11 @@ router.get('/download-file-s3', ensureAuthenticated, function (req, res) {
 		if (timeleft <= 0) {
 			clearInterval(downloadTimer);
 
-			//res.download(filePath);
 			res.redirect('/download-file-local');
 		}
 	}, 3000);
-	
-	
+
+
 });
 
 router.get('/download-file-local', ensureAuthenticated, function (req, res) {
