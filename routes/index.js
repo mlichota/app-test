@@ -138,7 +138,8 @@ router.get('/download-file-s3', ensureAuthenticated, function (req, res) {
 
 	file.on('finish', function () {
 		console.log(fileName + " downloaded");
-		res.redirect('/download-file-local');
+		//res.redirect('/download-file-local');
+		res.download(filePath);
 	});
 
 	file.on('error', function (e) {
@@ -158,7 +159,7 @@ router.get('/download-file-s3', ensureAuthenticated, function (req, res) {
 
 router.get('/download-file-local', ensureAuthenticated, function (req, res) {
 
-	res.download(filePath);
+	
 
 });
 
