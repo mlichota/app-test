@@ -13,13 +13,14 @@
       <tr>
         
         <th>Nazwa pliku</th>
+        <th>Rozmiar</th>
         <th>Wybierz</th>
       </tr>
     </thead>
     <tbody>
       {{#each list}}
       <tr>
-       
+       <td>{{this}}</td>
         <td>{{this}}</td>
         <td>
           <input type="radio" name="file" value={{this}}>
