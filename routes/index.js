@@ -8,24 +8,28 @@ var dataFormated = [];
 var path = require('path');
 var filePath;
 var fileName;
-var userName;
 var emptyBucket;
-
-
-
+var session = require('express-session');
 
 
 
 router.get('/', ensureAuthenticated, function (req, res) {
 	res.render('index', { list: req.user.username });
+	
+	fs.mkdtemp(path.join(__dirname, '../temp-'), (err, folder) => {
+		if (err) throw err;
+
+		req.session.tmpDir = folder;
+		console.log('Tworzę folder tymczasowy: ' + req.session.tmpDir)
+		// Prints: /tmp/foo-itXde2 or C:\Users\...\AppData\Local\Temp\foo-itXde2
+	});
+
 	console.log(req.session);
+
 });
 
-fs.mkdtemp(path.join(__dirname, '../temp-'), (err, folder) => {
-	if (err) throw err;
-	console.log(folder);
-	// Prints: /tmp/foo-itXde2 or C:\Users\...\AppData\Local\Temp\foo-itXde2
-});
+
+
 
 
 router.get('/upload', ensureAuthenticated, function (req, res) {
@@ -35,12 +39,12 @@ router.get('/upload', ensureAuthenticated, function (req, res) {
 
 	router.post('/upload', function (req, res) {
 
-		//console.log(req.files.sampleFile);
+		//console.log(res.session.user);
 
 		if (req.files.sampleFile !== undefined) {
 
-			console.log('ok');
-			console.log(req.files.sampleFile);
+
+			//console.log(req.files.sampleFile);
 
 			//res.render('upload');
 
@@ -48,26 +52,26 @@ router.get('/upload', ensureAuthenticated, function (req, res) {
 
 			let sampleFile = req.files.sampleFile;
 			let filename = req.files.sampleFile.name;
-			let flag = 0;
 
 
-			if (req.files.sampleFile.mimetype == 'image/jpeg') {
 
-				sampleFile.mv(filename, function (err) {
+			if (req.files.sampleFile.mimetype == 'image/jpeg' || req.files.sampleFile.mimetype == 'image/png' || req.files.sampleFile.mimetype == 'image/bmp') {
+
+				sampleFile.mv(req.session.tmpDir + '/' + filename, function (err) {
 					if (err)
 						return res.status(500).send(err);
 
-					fs.readFile(filename, function (err, data) {
+					fs.readFile(req.session.tmpDir + '/' + filename, function (err, data) {
 
 						if (err) { throw err; }
 
 						params = { Bucket: 'mlichota-test-' + req.user.username, Key: filename, Body: data };
 
-						
+
 
 
 						s3.putObject(params, function (err, data) {
-							
+
 							if (err) {
 
 								console.log(err)
@@ -79,11 +83,11 @@ router.get('/upload', ensureAuthenticated, function (req, res) {
 								console.log("Successfully uploaded data to myBucket/myKey");
 
 
-								fs.unlinkSync(filename, (err) => {
-									if (err) throw err;
-									console.log('Successfully deleted: ' + filename);
+								//fs.unlinkSync(filename, (err) => {
+								//	if (err) throw err;
+								//	console.log('Successfully deleted: ' + filename);
 
-								});
+								//});
 
 
 							}
@@ -158,7 +162,7 @@ router.get('/download-file-s3', ensureAuthenticated, function (req, res) {
 		Bucket: 'mlichota-test-' + req.user.username,
 		Key: fileName
 	};
-	filePath = path.join(__dirname, "../tmp/" + fileName);
+	filePath = req.session.tmpDir + '/' + fileName;
 
 	var file = fs.createWriteStream(filePath, 'utf8');
 
@@ -181,11 +185,27 @@ router.get('/download-file-s3', ensureAuthenticated, function (req, res) {
 
 
 
-	res.render('downloading', { fileName });
+	
+
+	var timeleft = 1;
+	var downloadTimer = setInterval(function () {
+		--timeleft;
+
+		if (timeleft <= 0) {
+			clearInterval(downloadTimer);
+
+			//res.download(filePath);
+			res.redirect('/download-file-local');
+		}
+	}, 3000);
+	
+	
 });
 
 router.get('/download-file-local', ensureAuthenticated, function (req, res) {
+
 	res.download(filePath);
+
 });
 
 

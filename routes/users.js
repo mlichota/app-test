@@ -139,7 +139,8 @@ router.post('/login',
 router.get('/logout', function (req, res) {
 	req.logout();
 	
-	rmdir('./temp-k9scJo', function(error){});
+	rmdir(req.session.tmpDir, function(error){});
+	console.log('Usuwam folder tymczasowy: ' + req.session.tmpDir)
 
 	req.flash('success_msg', 'Zostałeś wylogowany');
 
