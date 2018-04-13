@@ -24,7 +24,7 @@ router.get('/', ensureAuthenticated, function (req, res) {
 		// Prints: /tmp/foo-itXde2 or C:\Users\...\AppData\Local\Temp\foo-itXde2
 	});
 
-	
+
 
 });
 
@@ -120,6 +120,7 @@ router.get('/download', ensureAuthenticated, function (req, res) {
 		else {
 			emptyBucket = false
 			res.render('download', { list: data.Contents.Key });
+			console.log(data.Contents.Key);
 		}
 	});
 
