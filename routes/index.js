@@ -111,7 +111,7 @@ router.get('/download', ensureAuthenticated, function (req, res) {
 
 		var contents = data.Contents;
 		contents.forEach(function (data) {
-			dataFormated.push(data.Key, data.Size);
+			dataFormated.push(data.Key);
 		});
 		if (data.KeyCount == 0) {
 			emptyBucket = true
