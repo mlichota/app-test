@@ -111,7 +111,7 @@ router.get('/download', ensureAuthenticated, function (req, res) {
 
 		var contents = data.Contents;
 		contents.forEach(function (data) {
-			dataFormated.push(data.Key);
+			dataFormated.push(data.Key, data.Size);
 		});
 		if (data.KeyCount == 0) {
 			emptyBucket = true
@@ -120,7 +120,7 @@ router.get('/download', ensureAuthenticated, function (req, res) {
 		else {
 			emptyBucket = false
 			res.render('download', { list: dataFormated });
-			
+			console.log(dataFormated);
 		}
 	});
 
