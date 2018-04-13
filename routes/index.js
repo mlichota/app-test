@@ -64,7 +64,7 @@ router.get('/upload', ensureAuthenticated, function (req, res) {
 
 								console.log("Successfully uploaded data to myBucket/myKey");
 								req.flash('success_msg', 'Plik: ' + filename + ' został załadowany!');	
-								
+								res.redirect('upload');
 
 							}
 						});
@@ -77,14 +77,16 @@ router.get('/upload', ensureAuthenticated, function (req, res) {
 			}
 			else {
 				req.flash('error_msg', 'Plik nie jest obrazkiem! Obsługiwane typu plików: "*.jpg", "*.gif", "*.png".');
+				res.redirect('upload');
 			}
 		}
 		else {
 			req.flash('error_msg', 'Nie wybrałeś pliku. Wybierz plik i spróbuj ponownie.');
+			res.redirect('upload');
 			
 		}
 
-		res.redirect('upload');
+		
 
 	});
 
