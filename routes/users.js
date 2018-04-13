@@ -102,44 +102,15 @@ passport.deserializeUser(function (id, done) {
 router.post('/login',
 	passport.authenticate('local', { successRedirect: '/', failureRedirect: '/users/login', failureFlash: true }),
 	function (req, res) {
-		
-		
-		
-	
-		
-		
-		
-		
-				
-		
-		
-		
-		
-		
-		
-		
-		
+
 		res.redirect('/');
-		
-
-
-
-
-
-
-
-
-
-
-
-
 
 	});
 
 router.get('/logout', function (req, res) {
 	req.logout();
-	
-	rmdir(req.session.tmpDir, function(error){});
+
+	rmdir(req.session.tmpDir);
 	console.log('Usuwam folder tymczasowy: ' + req.session.tmpDir)
 
 	req.flash('success_msg', 'Zostałeś wylogowany');
