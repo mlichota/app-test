@@ -21,7 +21,7 @@ router.get('/', ensureAuthenticated, function (req, res) {
 
 		req.session.tmpDir = folder;
 		console.log('Tworzę folder tymczasowy: ' + req.session.tmpDir)
-		// Prints: /tmp/foo-itXde2 or C:\Users\...\AppData\Local\Temp\foo-itXde2
+		
 	});
 
 
