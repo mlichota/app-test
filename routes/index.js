@@ -24,7 +24,7 @@ router.get('/', ensureAuthenticated, function (req, res) {
 		// Prints: /tmp/foo-itXde2 or C:\Users\...\AppData\Local\Temp\foo-itXde2
 	});
 
-	console.log(req.session);
+	
 
 });
 
