@@ -28,10 +28,6 @@ router.get('/', ensureAuthenticated, function (req, res) {
 
 });
 
-
-
-
-
 router.get('/upload', ensureAuthenticated, function (req, res) {
 	res.render('upload');
 
@@ -138,7 +134,6 @@ router.get('/download-file-s3', ensureAuthenticated, function (req, res) {
 
 	file.on('finish', function () {
 		console.log(fileName + " downloaded");
-		//res.redirect('/download-file-local');
 		res.download(filePath);
 	});
 
@@ -156,13 +151,6 @@ router.get('/download-file-s3', ensureAuthenticated, function (req, res) {
 	
 
 });
-
-router.get('/download-file-local', ensureAuthenticated, function (req, res) {
-
-	
-
-});
-
 
 function ensureAuthenticated(req, res, next) {
 	if (req.isAuthenticated()) {
