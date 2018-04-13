@@ -156,7 +156,7 @@ router.get('/download-file-s3', ensureAuthenticated, function (req, res) {
 
 			res.redirect('/download-file-local');
 		}
-	}, 3000);
+	}, 5000);
 
 
 });
