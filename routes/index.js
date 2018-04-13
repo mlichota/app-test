@@ -63,6 +63,8 @@ router.get('/upload', ensureAuthenticated, function (req, res) {
 							} else {
 
 								console.log("Successfully uploaded data to myBucket/myKey");
+								req.flash('success_msg', 'Plik: ' + filename + ' został załadowany!');	
+								
 
 							}
 						});
@@ -70,7 +72,7 @@ router.get('/upload', ensureAuthenticated, function (req, res) {
 					});
 
 				});
-				req.flash('success_msg', 'Plik: ' + filename + ' został załadowany!');
+				
 
 			}
 			else {
@@ -79,8 +81,7 @@ router.get('/upload', ensureAuthenticated, function (req, res) {
 		}
 		else {
 			req.flash('error_msg', 'Nie wybrałeś pliku. Wybierz plik i spróbuj ponownie.');
-			console.log('pusty array');
-
+			
 		}
 
 		res.redirect('upload');
@@ -142,13 +143,6 @@ router.get('/download-file-s3', ensureAuthenticated, function (req, res) {
 	});
 
 	s3.getObject(params).createReadStream().pipe(file);
-
-
-	
-
-	
-			
-	
 
 });
 
