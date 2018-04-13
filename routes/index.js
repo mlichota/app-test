@@ -119,8 +119,8 @@ router.get('/download', ensureAuthenticated, function (req, res) {
 		}
 		else {
 			emptyBucket = false
-			res.render('download', { list: data.Contents.Key });
-			console.log(data.Contents.Key);
+			res.render('download', { list: data.Key });
+			console.log(data.Key);
 		}
 	});
 
