@@ -7,13 +7,14 @@
 
 {{else}}
 
-<form action="download-file-s3" method="get">
+<div class="table-responsive">
   <table class="table table-striped ">
     <thead>
       <tr>
-        
-        <th>Nazwa pliku</th>
-        <th>Wybierz</th>
+
+        <th style="width: 80%">Nazwa pliku</th>
+        <th style="width: 10%"></th>
+        <th style="width: 10%"></th>
 
       </tr>
     </thead>
@@ -22,13 +23,22 @@
       <tr>
         <td>{{this}}</td>
         <td>
-          <input type="radio" name="file" value={{this}}>
+          <form action="download-file-s3" method="get">
+            <button type="submit" name="file" value={{this}} class="btn btn-primary btn-sm">
+              <span class="glyphicon glyphicon-download"></span> Pobierz</button>
+          </form>
+        </td>
+        <td>
+          <form action="share-file" method="get">
+            <button type="submit" name="file" value={{this}} class="btn btn-info btn-sm">
+              <span class="glyphicon glyphicon-share"></span> Link</button>
+          </form>
         </td>
       </tr>
       {{/each}}
     </tbody>
   </table>
-  <button type="submit" class="btn btn-primary btn-lg btn-block ">Pobierz</button>
-</form>
+</div>
+
 
 {{/if}}
