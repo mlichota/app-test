@@ -90,7 +90,7 @@ app.use('/users', users);
 
 
 // Set Port
-app.set('port', (process.env.PORT || 8000));
+app.set('port', (process.env.PORT || 800));
 
 app.listen(app.get('port'), function(){
 	console.log('Server started on port '+app.get('port'));
