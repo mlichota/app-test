@@ -161,6 +161,7 @@ router.get('/share-file', ensureAuthenticated, function (req, res) {
 		copy(url); 
 		req.flash('success_msg', 'Tymczasowy link do pliku: "' + fileName + '" został skopiowany do schowka. Link będzie aktywny przez 5 minut.');
 		res.redirect('download');
+		
 
 	});
 	// expires in 60 seconds
