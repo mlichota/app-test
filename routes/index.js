@@ -10,7 +10,7 @@ var filePath;
 var fileName;
 var emptyBucket;
 var session = require('express-session');
-require("copy-paste").global()
+
 
 
 
@@ -158,10 +158,10 @@ router.get('/share-file', ensureAuthenticated, function (req, res) {
 	var params = { Bucket: 'mlichota-test-' + req.user.username, Key: fileName, Expires: 300 };
 	var url = s3.getSignedUrl('getObject', params, function (err, url) {
 		console.log('The URL is', url);
-		copy(url); 
-		req.flash('success_msg', 'Tymczasowy link do pliku: "' + fileName + '" został skopiowany do schowka. Link będzie aktywny przez 5 minut.');
-		res.redirect('download');
 		
+		req.flash('success_msg', 'Tymczasowy link do pliku: "' + fileName + '" <a>został skopiowany do schowka. Link będzie aktywny przez 5 minut.</a>');
+		res.redirect('download');
+
 
 	});
 	// expires in 60 seconds
