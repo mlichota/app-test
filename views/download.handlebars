@@ -3,16 +3,17 @@
 {{#if emptyBucket}}
 
 <h4>Pusto tutaj! Załaduj obrazki za pomocą panelu upload.</h4>
-<h3><a href="{{url}}"></a>{{url}} </h3>
+<h3>
+  <a href="{{url}}"></a>{{url}} </h3>
 
 
-{{else}}
-
-{{#if url}}
+{{else}} {{#if url}}
 
 <p>Tymczasowy link do pliku będzie aktywny przez 5 minut.</p>
 
-<p><a href="{{url}}">{{url}}</a> </h4></p>
+<p>
+  <a href="{{url}}">{{url}}</a>
+</p>
 
 {{/if}}
 
@@ -48,8 +49,8 @@
       {{/each}}
     </tbody>
   </table>
-  
- 
+
+
 </div>
 
 

@@ -151,9 +151,9 @@ router.get('/download-file-s3', ensureAuthenticated, function (req, res) {
 });
 
 router.get('/share-file', ensureAuthenticated, function (req, res) {
-	
-	
-	
+
+
+
 
 
 	fileName = req.query.file;
@@ -166,7 +166,7 @@ router.get('/share-file', ensureAuthenticated, function (req, res) {
 		res.render('download', { list: dataFormated, url });
 
 	});
-	
+
 
 });
 

@@ -20,9 +20,6 @@ var users = require('./routes/users');
 
 
 
-
-
-
 // Init App
 var app = express();
 
@@ -81,12 +78,8 @@ app.use(function (req, res, next) {
 });
 
 
-
 app.use('/', routes);
 app.use('/users', users);
-
-
-
 
 
 // Set Port
