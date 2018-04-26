@@ -32,6 +32,7 @@ router.get('/', ensureAuthenticated, function (req, res) {
 
 router.get('/upload', ensureAuthenticated, function (req, res) {
 	res.render('upload');
+});
 
 	router.use(fileUpload({ safeFileNames: true, preserveExtension: true }));
 
@@ -92,7 +93,7 @@ router.get('/upload', ensureAuthenticated, function (req, res) {
 
 	});
 
-});
+
 
 router.get('/download', ensureAuthenticated, function (req, res) {
 
