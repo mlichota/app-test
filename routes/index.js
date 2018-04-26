@@ -32,66 +32,67 @@ router.get('/', ensureAuthenticated, function (req, res) {
 
 router.get('/upload', ensureAuthenticated, function (req, res) {
 	res.render('upload');
+
 });
 
-	router.use(fileUpload({ safeFileNames: true, preserveExtension: true }));
+router.use(fileUpload({ safeFileNames: true, preserveExtension: true }));
 
-	router.post('/upload', function (req, res) {
-
-
-		if (req.files.sampleFile !== undefined) {
-
-			let sampleFile = req.files.sampleFile;
-			let filename = req.files.sampleFile.name;
+router.post('/upload', function (req, res) {
 
 
-			if (req.files.sampleFile.mimetype == 'image/jpeg' || req.files.sampleFile.mimetype == 'image/png' || req.files.sampleFile.mimetype == 'image/bmp') {
+	if (req.files.sampleFile !== undefined) {
 
-				sampleFile.mv(req.session.tmpDir + '/' + filename, function (err) {
-					if (err)
-						return res.status(500).send(err);
+		let sampleFile = req.files.sampleFile;
+		let filename = req.files.sampleFile.name;
 
-					fs.readFile(req.session.tmpDir + '/' + filename, function (err, data) {
 
-						if (err) { throw err; }
+		if (req.files.sampleFile.mimetype == 'image/jpeg' || req.files.sampleFile.mimetype == 'image/png' || req.files.sampleFile.mimetype == 'image/bmp') {
 
-						params = { Bucket: 'mlichota-test-' + req.user.username, Key: filename, Body: data };
+			sampleFile.mv(req.session.tmpDir + '/' + filename, function (err) {
+				if (err)
+					return res.status(500).send(err);
 
-						s3.putObject(params, function (err, data) {
+				fs.readFile(req.session.tmpDir + '/' + filename, function (err, data) {
 
-							if (err) {
+					if (err) { throw err; }
 
-								console.log(err)
+					params = { Bucket: 'mlichota-test-' + req.user.username, Key: filename, Body: data };
 
-							} else {
+					s3.putObject(params, function (err, data) {
 
-								console.log("Successfully uploaded data to myBucket/myKey");
-								req.flash('success_msg', 'Plik: ' + filename + ' został załadowany!');
-								res.redirect('upload');
+						if (err) {
 
-							}
-						});
+							console.log(err)
 
+						} else {
+
+							console.log("Successfully uploaded data to myBucket/myKey");
+							req.flash('success_msg', 'Plik: ' + filename + ' został załadowany!');
+							res.redirect('upload');
+
+						}
 					});
 
 				});
 
+			});
 
-			}
-			else {
-				req.flash('error_msg', 'Plik nie jest obrazkiem! Obsługiwane typu plików: "*.jpg", "*.gif", "*.png".');
-				res.redirect('upload');
-			}
+
 		}
 		else {
-			req.flash('error_msg', 'Nie wybrałeś pliku. Wybierz plik i spróbuj ponownie.');
+			req.flash('error_msg', 'Plik nie jest obrazkiem! Obsługiwane typu plików: "*.jpg", "*.gif", "*.png".');
 			res.redirect('upload');
-
 		}
+	}
+	else {
+		req.flash('error_msg', 'Nie wybrałeś pliku. Wybierz plik i spróbuj ponownie.');
+		res.redirect('upload');
+
+	}
 
 
 
-	});
+});
 
 
 
